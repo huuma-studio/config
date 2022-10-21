@@ -1,3 +1,1 @@
-export const plugin = {
-  platform: {},
-};
+export { LabelPlugin } from "./plugin.ts";
