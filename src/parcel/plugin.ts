@@ -15,9 +15,11 @@ export function LabelPlugin(options: {
     }],
     plugin() {
       return {
-        scripts: [`import { Label } from "/plugin-label.js";
-	LabelPlugin(${JSON.stringify(options.loader())})
-	`],
+        scripts: [
+          `<script type="module">import { Label } from "/plugin-label.js";
+	Label(${JSON.stringify(options.loader())})
+	<script>`,
+        ],
       };
     },
   };
