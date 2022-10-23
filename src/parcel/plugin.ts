@@ -1,18 +1,21 @@
 import { BaseSchema } from "../deps.ts";
-import { label } from "../label.ts";
+import { label, Labels } from "../label.ts";
 
 export function LabelPlugin(options: {
   schema?: BaseSchema;
-  loader(): Record<string, unknown>;
+  loader(): Labels;
 }) {
+  // Setup Label for the server
   label.setup(options);
 
   return {
     name: "Label",
-    entryPoints: [new URL("./main.ts", import.meta.url).href],
-    plugin(entryPoints: string[]) {
+    entryPoints: [{
+      "plugin-label": new URL("./main.ts", import.meta.url).href,
+    }],
+    plugin() {
       return {
-        scripts: [`import { Label } from "${entryPoints[0]}";
+        scripts: [`import { Label } from "/plugin-label.js";
 	LabelPlugin(${JSON.stringify(options.loader())})
 	`],
       };

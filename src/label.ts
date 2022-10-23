@@ -1,12 +1,16 @@
 import { BaseSchema } from "./deps.ts";
 
-const envVars = new Map();
-let isSetup = false;
+export type Labels = {
+  [key: string]: string | number | boolean | Labels;
+};
 
-export interface LabelOptions {
-  loader: () => Record<string, unknown>;
+export interface LabelsOptions {
+  loader: () => Labels;
   schema?: BaseSchema;
 }
+
+const envVars = new Map();
+let isSetup = false;
 
 export const label = {
   get,
@@ -21,7 +25,7 @@ function get<T>(search: string): T {
   return envVars.get(search);
 }
 
-function setup(options: LabelOptions) {
+function setup(options: LabelsOptions) {
   if (isSetup) {
     throw new Error("Cargo Label allowed to setup options only once.");
   }

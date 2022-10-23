@@ -1,6 +1,6 @@
-import { label } from "../mod.ts";
+import { label, Labels } from "../mod.ts";
 
-export function LabelPlugin(state: Record<string, unknown>) {
+export function LabelPlugin(state: Labels) {
   label.setup({
     loader() {
       return state;
