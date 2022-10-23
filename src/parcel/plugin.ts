@@ -18,7 +18,7 @@ export function LabelPlugin(options: {
         scripts: [
           `<script type="module">import { Label } from "/plugin-label.js";
 	Label(${JSON.stringify(options.loader())})
-	<script>`,
+	</script>`,
         ],
       };
     },
