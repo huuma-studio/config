@@ -39,7 +39,7 @@ function filterAllowedInBrowser(labels: Labels) {
         typeof labels[key] === "boolean"
       ) {
         allowedLabels[key] = labels[key];
-        break;
+        continue;
       }
       allowedLabels[key] = filterAllowedInBrowser(<Labels> labels[key]);
     }
