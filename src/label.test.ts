@@ -1,20 +1,25 @@
 import {
   assertEquals,
+  assertRejects,
   assertThrows,
   ObjectSchema,
   StringSchema,
 } from "./deps_test.ts";
 import { label } from "./mod.ts";
 
-Deno.test("Label: Throws error because its not setup", () => {
-  assertThrows(() => {
-    return label.get<string>("NAME");
-  });
+Deno.test("Cargo Label: Should throw 'Not setup' error'", () => {
+  assertThrows(
+    () => {
+      return label.get("NAME");
+    },
+    Error,
+    "Cargo Label not yet setup",
+  );
 });
 
-Deno.test("Label: Variable 'NAME' is undefined", () => {
-  label.setup({
-    loader: () => {
+Deno.test("Cargo Label: Variable 'NAME' should be undefined", async () => {
+  await label.setup({
+    labels: () => {
       return {};
     },
   });
@@ -26,26 +31,26 @@ Deno.test("Label: Variable 'NAME' is undefined", () => {
   label.reset();
 });
 
-Deno.test("Label: Variable 'NAME' is equals 'Luke'", () => {
-  label.setup({
-    loader: () => {
+Deno.test("Cargo Label: Variable 'NAME' should be equals 'Luke'", async () => {
+  await label.setup({
+    labels: () => {
       return { NAME: "Luke" };
     },
   });
 
-  assertEquals(label.get<string>("NAME"), "Luke");
+  assertEquals(label.get("NAME"), "Luke");
 
   label.reset();
 });
 
-Deno.test("Label: Variable 'NAME' is equals 'Luke' with schema validation", () => {
+Deno.test("Cargo Label: Variable 'NAME' should be equals 'Luke' with schema validation", async () => {
   const schema = new ObjectSchema({
     NAME: new StringSchema(),
   });
 
-  label.setup({
+  await label.setup({
     schema,
-    loader: () => {
+    labels: () => {
       return { NAME: "Luke" };
     },
   });
@@ -55,37 +60,45 @@ Deno.test("Label: Variable 'NAME' is equals 'Luke' with schema validation", () =
   label.reset();
 });
 
-Deno.test("Label: Throws error because of failed schema validation", () => {
+Deno.test("Cargo Label: Should reject with 'schema validation failed' error", async () => {
   const schema = new ObjectSchema({
     NAME: new StringSchema(),
   });
 
-  assertThrows(() => {
-    return label.setup({
-      schema,
-      loader: () => {
-        return { NAME: 1 };
-      },
-    });
-  });
+  await assertRejects(
+    async () => {
+      return await label.setup({
+        schema,
+        labels: () => {
+          return { NAME: 1 };
+        },
+      });
+    },
+    Error,
+    JSON.stringify([{ "message": '"NAME" is not type "string"' }]),
+  );
 
   label.reset();
 });
 
-Deno.test("Label: Throws error if called multiple times with options param", () => {
-  label.setup({
-    loader: () => {
+Deno.test("Cargo Label: Should reject with  error 'Called multiples times' error", async () => {
+  await label.setup({
+    labels: () => {
       return {};
     },
   });
 
-  assertThrows(() => {
-    return label.setup({
-      loader: () => {
-        return {};
-      },
-    });
-  });
+  await assertRejects(
+    async () => {
+      return await label.setup({
+        labels: () => {
+          return {};
+        },
+      });
+    },
+    Error,
+    "Cargo Label allowed to setup options only once.",
+  );
 
   label.reset();
 });
