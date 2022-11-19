@@ -1,15 +1,11 @@
-import { BaseSchema } from "../deps.ts";
-import { label, Labels } from "../label.ts";
+import { label, Labels, LabelsOptions } from "../label.ts";
 
-export function LabelPlugin(options: {
-  schema?: BaseSchema;
-  loader(): Labels;
-}) {
+export async function LabelPlugin<T extends Labels>(options: LabelsOptions<T>) {
   // Setup Label for the server
-  label.setup(options);
+  await label.setup(options);
 
   return {
-    name: "Label",
+    name: "Cargo Label Plugin",
     entryPoints: [{
       "plugin-label": new URL("./main.ts", import.meta.url).href,
     }],
@@ -17,7 +13,7 @@ export function LabelPlugin(options: {
       return {
         scripts: [
           `<script type="module">import { Label } from "/plugin-label.js";
-	Label(${JSON.stringify(filterAllowedInBrowser(options.loader()))})
+	Label(${JSON.stringify(filterAllowedInBrowser(label.getAll()))})
 	</script>`,
         ],
       };
