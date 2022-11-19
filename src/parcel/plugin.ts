@@ -6,15 +6,15 @@ export async function LabelPlugin<T extends Labels>(options: LabelsOptions<T>) {
 
   return {
     name: "Cargo Label Plugin",
-    entryPoints: [{
-      "plugin-label": new URL("./main.ts", import.meta.url).href,
-    }],
     plugin() {
       return {
+        entryPoints: {
+          "plugin-label": new URL("./main.ts", import.meta.url).href,
+        },
         scripts: [
-          `<script type="module">import { Label } from "/plugin-label.js";
-	Label(${JSON.stringify(filterAllowedInBrowser(label.getAll()))})
-	</script>`,
+          `<script type="module">import { Label } from "/plugin-label.js";Label(${
+            JSON.stringify(filterAllowedInBrowser(label.getAll()))
+          })</script>`,
         ],
       };
     },
