@@ -4,10 +4,10 @@ import { assemble, get } from "assemble/mod.ts";
 export function LabelPlugin<T extends Labels>(options: LabelsOptions<T>) {
   // Setup Label for the server
   assemble({
-    token: "labelConfig",
+    token: "labelOptions",
     value: options,
   });
-  assemble({ class: Label, dependencies: ["labelConfig"] });
+  assemble({ class: Label, dependencies: ["labelOptions"] });
   assemble({ token: "LabelService", value: get(Label) });
 
   const config = <Label<T>> get(Label);
