@@ -20,7 +20,7 @@ export function LabelPlugin<T extends Labels>(options: LabelsOptions<T>) {
           "plugin-label": new URL("./main.ts", import.meta.url).href,
         },
         scripts: [
-          `<script type="module">import { Label } from "/plugin-label.js";Label(${
+          `<script type="module">import { setupLabels } from "/plugin-label.js";setupLabels(${
             JSON.stringify(filterAllowedInBrowser(config.getAll()))
           })</script>`,
         ],
