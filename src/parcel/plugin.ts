@@ -1,8 +1,16 @@
-import { label, Labels, LabelsOptions } from "../label.ts";
+import { Label, Labels, LabelsOptions } from "../label.ts";
+import { assemble, get } from "assemble/mod.ts";
 
-export async function LabelPlugin<T extends Labels>(options: LabelsOptions<T>) {
+export function LabelPlugin<T extends Labels>(options: LabelsOptions<T>) {
   // Setup Label for the server
-  await label.setup(options);
+  assemble({
+    token: "labelConfig",
+    value: options,
+  });
+  assemble({ class: Label, dependencies: ["labelConfig"] });
+  assemble({ token: "LabelService", value: get(Label) });
+
+  const config = <Label<T>> get(Label);
 
   return {
     name: "Cargo Label Plugin",
@@ -13,7 +21,7 @@ export async function LabelPlugin<T extends Labels>(options: LabelsOptions<T>) {
         },
         scripts: [
           `<script type="module">import { Label } from "/plugin-label.js";Label(${
-            JSON.stringify(filterAllowedInBrowser(label.getAll()))
+            JSON.stringify(filterAllowedInBrowser(config.getAll()))
           })</script>`,
         ],
       };
