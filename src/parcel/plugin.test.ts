@@ -1,26 +1,39 @@
+import { get } from "assemble/mod.ts";
 import { assertEquals } from "std/testing/asserts.ts";
+import { Label } from "../label.ts";
 import { LabelPlugin } from "./plugin.ts";
 
-const Plugin = (LabelPlugin({
-  labels: {
-    name: "Anakin",
-    "name!": "Luke",
-  },
-}));
+const configLabels = {
+  name: "Anakin",
+  "name!": "Luke",
+};
+
+const Plugin = LabelPlugin({
+  labels: configLabels,
+});
+
 const plugin = Plugin.plugin();
 
-Deno.test("Cargo Label Plugin: 'name' should be 'Cargo Label Plugin'", () => {
-  assertEquals(Plugin.name, "Cargo Label Plugin");
-});
-
-Deno.test("Cargo Label Plugin: 'entryPoints' array should be set", () => {
-  assertEquals(plugin.entryPoints, {
-    "plugin-label": new URL("main.ts", import.meta.url).href,
+Deno.test(LabelPlugin.name, async (t) => {
+  await t.step('should have name "Cargo Label Plugin"', () => {
+    assertEquals(Plugin.name, "Cargo Label Plugin");
   });
-});
 
-Deno.test("Cargo Label Plugin: plugin() call should return array with 'scripts'", () => {
-  assertEquals(plugin.scripts, [
-    '<script type="module">import { Label } from "/plugin-label.js";Label({"name!":"Luke"})</script>',
-  ]);
+  await t.step("should have all expected props", () => {
+    assertEquals(plugin.entryPoints, {
+      "plugin-label": new URL("main.ts", import.meta.url).href,
+    });
+    assertEquals(plugin.scripts, [
+      '<script type="module">import { setupLabels } from "/plugin-label.js";setupLabels({"name!":"Luke"})</script>',
+    ]);
+  });
+
+  await t.step("should have access to label in Cargo Assemble", () => {
+    console.log(get(Label));
+    assertEquals(
+      get<Label<typeof configLabels>>("LabelService").get("name!"),
+      "Luke",
+    );
+    assertEquals(get<Label<typeof configLabels>>(Label).get("name"), "Anakin");
+  });
 });
