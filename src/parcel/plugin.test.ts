@@ -29,7 +29,6 @@ Deno.test(LabelPlugin.name, async (t) => {
   });
 
   await t.step("should have access to label in Cargo Assemble", () => {
-    console.log(get(Label));
     assertEquals(
       get<Label<typeof configLabels>>("LabelService").get("name!"),
       "Luke",
