@@ -1,8 +1,8 @@
-import { ObjectSchema } from "inspect/mod.ts";
+import type { ObjectSchema } from "inspect/schemas/object.ts";
 
 export interface LabelsOptions<T extends Labels> {
   labels: T;
-  schema?: ObjectSchema;
+  schema?: ObjectSchema<Record<string, any>>;
 }
 
 export type Labels = {

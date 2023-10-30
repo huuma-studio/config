@@ -1,5 +1,6 @@
-import { ObjectSchema, StringSchema } from "inspect/mod.ts";
-import { assertEquals, assertThrows } from "std/testing/asserts.ts";
+import { StringSchema } from "inspect/schemas/string.ts";
+import { ObjectSchema } from "inspect/schemas/object.ts";
+import { assertEquals, assertThrows } from "std/assert/mod.ts";
 import { Label } from "./label.ts";
 
 Deno.test(Label.name, async (t) => {
