@@ -9,7 +9,7 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
-      - run: deno check src/**/*.ts
+      - run: deno check **/*.ts
   test:
     runs-on: ubuntu-latest
     steps:
