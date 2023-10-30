@@ -1,3 +1,6 @@
 {
+  "tasks": {
+    "check": "deno check src/**/*.ts"
+  },
   "importMap": "./.dev/import_map.json"
 }
