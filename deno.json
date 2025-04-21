@@ -1,6 +1,11 @@
 {
+  "name": "@huuma/config",
+  "exports": "./src/mod.ts",
   "tasks": {
     "check": "deno check src/**/*.ts"
   },
-  "importMap": "./.dev/import_map.json"
+  "imports": {
+    "@huuma/validate": "jsr:@huuma/validate@^0.0.10",
+    "@std/assert": "jsr:@std/assert@^1.0.12"
+  }
 }

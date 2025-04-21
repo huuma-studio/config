@@ -1,13 +1,13 @@
-import { StringSchema } from "inspect/schemas/string.ts";
-import { ObjectSchema } from "inspect/schemas/object.ts";
-import { assertEquals, assertThrows } from "std/assert/mod.ts";
-import { Label } from "./label.ts";
+import { StringSchema } from "@huuma/validate/string";
+import { ObjectSchema } from "@huuma/validate/object";
+import { assertEquals, assertThrows } from "@std/assert";
+import { ConfigRegistry } from "./mod.ts";
 
-Deno.test(Label.name, async (t) => {
+Deno.test(ConfigRegistry.name, async (t) => {
   await t.step("should equals undefined", () => {
     assertEquals(
-      new Label<any>({
-        labels: {
+      new ConfigRegistry<any>({
+        config: {
           name: "Hello",
         },
       }).get("value"),
@@ -17,8 +17,8 @@ Deno.test(Label.name, async (t) => {
 
   await t.step('should equals "Luke"', () => {
     assertEquals(
-      new Label({
-        labels: {
+      new ConfigRegistry({
+        config: {
           name: "Luke",
         },
       }).get("name"),
@@ -28,11 +28,11 @@ Deno.test(Label.name, async (t) => {
 
   await t.step("should validate schema", () => {
     assertEquals(
-      new Label({
+      new ConfigRegistry({
         schema: new ObjectSchema({
           name: new StringSchema(),
         }),
-        labels: {
+        config: {
           name: "Luke",
         },
       }).get("name"),
@@ -43,11 +43,11 @@ Deno.test(Label.name, async (t) => {
   await t.step("should throw schema validation error", () => {
     assertThrows(
       () => {
-        new Label({
+        new ConfigRegistry({
           schema: new ObjectSchema({
             name: new StringSchema(),
           }),
-          labels: {},
+          config: {},
         });
       },
       Error,
